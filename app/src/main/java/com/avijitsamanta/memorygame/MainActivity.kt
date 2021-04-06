@@ -1,14 +1,14 @@
 package com.avijitsamanta.memorygame
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.avijitsamanta.memorygame.models.BoardSize
-import com.avijitsamanta.memorygame.utils.DEFAULT_ICONS
+import com.avijitsamanta.memorygame.utils.MemoryGame
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),MemoryBoardAdapter.CardClickListener {
     private lateinit var rvBoard: RecyclerView
     private lateinit var tvNumMoves: TextView
     private lateinit var tvNumPairs: TextView
@@ -23,11 +23,14 @@ class MainActivity : AppCompatActivity() {
         tvNumMoves = findViewById(R.id.tvNumMoves)
         tvNumPairs = findViewById(R.id.tvNumPairs)
 
-        val chosenImages = DEFAULT_ICONS.shuffled().take(boardSize.getNumPairs())
-        val randomizedImages = (chosenImages + chosenImages).shuffled()
+        val memoryGame = MemoryGame(boardSize)
 
-        rvBoard.adapter = MemoryBoardAdapter(this, boardSize,randomizedImages)
+        rvBoard.adapter = MemoryBoardAdapter(this, boardSize, memoryGame.cards,this)
         rvBoard.setHasFixedSize(true)
         rvBoard.layoutManager = GridLayoutManager(this, boardSize.getWidth())
+    }
+
+    override fun onCardClicked(position: Int) {
+
     }
 }

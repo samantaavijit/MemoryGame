@@ -9,12 +9,14 @@ import android.widget.ImageButton
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.avijitsamanta.memorygame.models.BoardSize
+import com.avijitsamanta.memorygame.models.MemoryCard
 import kotlin.math.min
 
 class MemoryBoardAdapter(
     private val context: Context,
     private val boardSize: BoardSize,
-    private val cardImages: List<Int>
+    private val cards: List<MemoryCard>,
+    private val listener: CardClickListener
 ) :
     RecyclerView.Adapter<MemoryBoardAdapter.BoardViewHolder>() {
     companion object {
@@ -48,13 +50,17 @@ class MemoryBoardAdapter(
         private val imageButton = itemView.findViewById<ImageButton>(R.id.imageButton)
 
         fun bindView(position: Int) {
-            imageButton.setImageResource(cardImages[position])
+            val memoryCard = cards[position]
+            imageButton.setImageResource(if (memoryCard.isFaceUp) memoryCard.identifier else R.drawable.ic_launcher_background)
 
             imageButton.setOnClickListener {
-                Log.d(TAG, "bindView: $position")
-
+                listener.onCardClicked(position)
             }
         }
 
+    }
+
+    interface CardClickListener {
+        fun onCardClicked(position: Int)
     }
 }

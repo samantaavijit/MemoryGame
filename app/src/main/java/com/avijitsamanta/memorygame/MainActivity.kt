@@ -1,10 +1,12 @@
 package com.avijitsamanta.memorygame
 
+import android.animation.ArgbEvaluator
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.avijitsamanta.memorygame.models.BoardSize
@@ -23,6 +25,7 @@ class MainActivity : AppCompatActivity(), MemoryBoardAdapter.CardClickListener {
 
     private var boardSize: BoardSize = BoardSize.EASY
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -37,6 +40,10 @@ class MainActivity : AppCompatActivity(), MemoryBoardAdapter.CardClickListener {
         rvBoard.adapter = adapter
         rvBoard.setHasFixedSize(true)
         rvBoard.layoutManager = GridLayoutManager(this, boardSize.getWidth())
+
+        tvNumMoves.text = "Moves: ${memoryGame.getNumMoves()}"
+        tvNumPairs.text = "Pairs: ${memoryGame.numPairsFound} / ${boardSize.getNumPairs()}"
+        tvNumPairs.setTextColor(ContextCompat.getColor(this, R.color.color_progress_none))
     }
 
     override fun onCardClicked(position: Int) {
@@ -50,16 +57,23 @@ class MainActivity : AppCompatActivity(), MemoryBoardAdapter.CardClickListener {
             return
         }
         if (memoryGame.isCardFaceUp(position)) {
-            Snackbar.make(clRoot, "Invalid move!", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(clRoot, "Invalid move!", Snackbar.LENGTH_SHORT).show()
             return
         }
 
         if (memoryGame.flipCard(position)) {
+            val color = ArgbEvaluator().evaluate(
+                memoryGame.numPairsFound.toFloat() / boardSize.getNumPairs(),
+                ContextCompat.getColor(this, R.color.color_progress_none),
+                ContextCompat.getColor(this, R.color.color_progress_full),
+            ) as Int
+            tvNumPairs.setTextColor(color)
             tvNumPairs.text = "Pairs: ${memoryGame.numPairsFound} / ${boardSize.getNumPairs()}"
             if (memoryGame.haveWonGame()) {
                 Snackbar.make(clRoot, "You won! Congratulation.", Snackbar.LENGTH_LONG).show()
             }
         }
+        tvNumMoves.text = "Moves: ${memoryGame.getNumMoves()}"
         adapter.notifyDataSetChanged()
     }
 }

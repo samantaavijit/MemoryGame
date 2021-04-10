@@ -119,6 +119,7 @@ class MainActivity : AppCompatActivity(), MemoryBoardAdapter.CardClickListener {
                 else -> BoardSize.HARD
             }
             setupBoard()
+
         }
     }
 

@@ -31,6 +31,7 @@
         android:digits="0123456789abcdefghijklmnopqrstuvwxyz_-"
         android:ems="10"
         android:maxLines="1"
+
         android:hint="@string/game_name_example_panda_fun"
         android:imeOptions="actionDone|actionGo|actionSend"
         android:inputType="text"

@@ -11,4 +11,8 @@
         android:id="@+id/ui_new_size"
         android:title="@string/choose_new_size"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/ui_custom"
+        android:title="Create custom game"
+        app:showAsAction="never" />
 </menu>

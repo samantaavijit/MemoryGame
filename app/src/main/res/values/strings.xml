@@ -5,4 +5,6 @@
     <string name="medium_6_x_3">Medium ( 6 x 3)</string>
     <string name="hard_6_x_4">Hard (6 x 4)</string>
     <string name="choose_new_size">Choose New Size</string>
+    <string name="save">Save</string>
+    <string name="game_name_example_panda_fun">Game name ( example \'panda_fun\')</string>
 </resources>

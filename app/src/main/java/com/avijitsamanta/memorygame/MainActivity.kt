@@ -2,6 +2,7 @@ package com.avijitsamanta.memorygame
 
 import android.animation.ArgbEvaluator
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -31,6 +32,10 @@ class MainActivity : AppCompatActivity(), MemoryBoardAdapter.CardClickListener {
 
     private var boardSize: BoardSize = BoardSize.EASY
 
+    companion object {
+        const val CREATE_REQUEST_CODE = 248
+        const val EXTRA_BOARD_SIZE = "EXTRA_BOARD_SIZE"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,8 +101,30 @@ class MainActivity : AppCompatActivity(), MemoryBoardAdapter.CardClickListener {
                 showNewSizeDialog()
                 return true
             }
+            R.id.ui_custom -> {
+                showCreationDialog()
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showCreationDialog() {
+        val boardSizeView = LayoutInflater.from(this).inflate(R.layout.dialog_board_size, null)
+        val radioGroupSize = boardSizeView.findViewById<RadioGroup>(R.id.radioGroup)
+
+        showAlertDialog("Create your own memory board", boardSizeView) {
+            // set a new value for the board size
+            val desiredBoardSize = when (radioGroupSize.checkedRadioButtonId) {
+                R.id.rbEasy -> BoardSize.EASY
+                R.id.rbMedium -> BoardSize.MEDIUM
+                else -> BoardSize.HARD
+            }
+            // navigate to a new screen
+            val intent = Intent(this, CreateActivity::class.java)
+            intent.putExtra(EXTRA_BOARD_SIZE, desiredBoardSize)
+            startActivityForResult(intent, CREATE_REQUEST_CODE)
+        }
     }
 
     @SuppressLint("InflateParams")
@@ -119,7 +146,6 @@ class MainActivity : AppCompatActivity(), MemoryBoardAdapter.CardClickListener {
                 else -> BoardSize.HARD
             }
             setupBoard()
-
         }
     }
 

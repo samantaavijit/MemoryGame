@@ -1,4 +1,4 @@
-package com.avijitsamanta.memorygame
+package com.avijitsamanta.memorygame.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.avijitsamanta.memorygame.R
 import com.avijitsamanta.memorygame.models.BoardSize
 import com.avijitsamanta.memorygame.models.MemoryCard
 import kotlin.math.min

@@ -16,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.avijitsamanta.memorygame.adapter.MemoryBoardAdapter
 import com.avijitsamanta.memorygame.models.BoardSize
 import com.avijitsamanta.memorygame.utils.MemoryGame
 import com.google.android.material.snackbar.Snackbar

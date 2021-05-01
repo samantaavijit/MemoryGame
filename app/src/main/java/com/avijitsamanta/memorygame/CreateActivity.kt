@@ -1,6 +1,7 @@
 package com.avijitsamanta.memorygame
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -20,12 +21,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.avijitsamanta.memorygame.MainActivity.Companion.EXTRA_BOARD_SIZE
 import com.avijitsamanta.memorygame.adapter.ImagePickerAdopter
 import com.avijitsamanta.memorygame.models.BoardSize
-import com.avijitsamanta.memorygame.utils.BitmapScalar
-import com.avijitsamanta.memorygame.utils.isPermissionGranted
-import com.avijitsamanta.memorygame.utils.requestPermission
+import com.avijitsamanta.memorygame.utils.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -108,8 +106,39 @@ class CreateActivity : AppCompatActivity() {
      * save images to firebase
      */
     private fun saveDataToFirebase() {
-        val customGameName = etGameName.text.toString()
         Log.i(TAG, "saveDataToFirebase")
+        btnSave.isEnabled = false
+        val customGameName = etGameName.text.toString()
+        // Check that we're not over writing someone else's data
+        db.collection(COLLECTION_PATH).document(customGameName).get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.data != null) { // Already exist
+                    AlertDialog.Builder(this)
+                        .setTitle("name Taken")
+                        .setMessage("A game already exists with the name <b>$customGameName</b>. Please choose another")
+                        .setPositiveButton("OK", null)
+                        .show()
+                    btnSave.isEnabled = true
+                } else {
+                    handleImageUploading(customGameName)
+                }
+            }.addOnFailureListener { exception ->
+                Log.e(TAG, "Encountered error while saving memory game", exception)
+                Toast.makeText(
+                    this,
+                    "Encountered error while saving memory game",
+                    Toast.LENGTH_SHORT
+                ).show()
+                btnSave.isEnabled = true
+            }
+
+    }
+
+    /**
+     * upload all
+     * images to firebase
+     */
+    private fun handleImageUploading(customGameName: String) {
         var didEncounterError = false
         val uploadedImageUrls = mutableListOf<String>()
 
@@ -135,14 +164,35 @@ class CreateActivity : AppCompatActivity() {
                     uploadedImageUrls.add(downloadUrl)
                     Log.i(TAG, "Finished upload $photoUri , num uploaded ${uploadedImageUrls.size}")
                     if (uploadedImageUrls.size == chosenImageUris.size) {
-                        handleAllImagesUpload(customGameName, uploadedImageUrls)
+                        handleAllImagesUploadUrls(customGameName, uploadedImageUrls)
                     }
                 }
         }
     }
 
-    private fun handleAllImagesUpload(gameName: String, imageUrls: MutableList<String>) {
-//        TODO: upload this info to FireStorage
+    /**
+     * store all image
+     * urls in database
+     */
+    private fun handleAllImagesUploadUrls(gameName: String, imageUrls: MutableList<String>) {
+        db.collection(COLLECTION_PATH).document(gameName)
+            .set(mapOf("images" to imageUrls))
+            .addOnCompleteListener { gameCreationTask ->
+                if (!gameCreationTask.isSuccessful) {
+                    Log.e(TAG, "Exception with game creation", gameCreationTask.exception)
+                    Toast.makeText(this, "Failed game creation", Toast.LENGTH_SHORT).show()
+                    return@addOnCompleteListener
+                }
+                Log.i(TAG, "Successfully created game $gameName")
+                AlertDialog.Builder(this)
+                    .setTitle("Upload complete! Let's play your game '$gameName'")
+                    .setPositiveButton("OK") { _, _ ->
+                        val resultData = Intent()
+                        resultData.putExtra(EXTRA_GAME_NAME, gameName)
+                        setResult(Activity.RESULT_OK, resultData)
+                        finish()
+                    }.show()
+            }
     }
 
     /***

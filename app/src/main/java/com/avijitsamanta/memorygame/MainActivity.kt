@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.avijitsamanta.memorygame.adapter.MemoryBoardAdapter
 import com.avijitsamanta.memorygame.models.BoardSize
+import com.avijitsamanta.memorygame.utils.EXTRA_BOARD_SIZE
 import com.avijitsamanta.memorygame.utils.MemoryGame
 import com.google.android.material.snackbar.Snackbar
 
@@ -35,7 +36,6 @@ class MainActivity : AppCompatActivity(), MemoryBoardAdapter.CardClickListener {
 
     companion object {
         const val CREATE_REQUEST_CODE = 248
-        const val EXTRA_BOARD_SIZE = "EXTRA_BOARD_SIZE"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,6 +110,7 @@ class MainActivity : AppCompatActivity(), MemoryBoardAdapter.CardClickListener {
         return super.onOptionsItemSelected(item)
     }
 
+    @SuppressLint("InflateParams")
     private fun showCreationDialog() {
         val boardSizeView = LayoutInflater.from(this).inflate(R.layout.dialog_board_size, null)
         val radioGroupSize = boardSizeView.findViewById<RadioGroup>(R.id.radioGroup)

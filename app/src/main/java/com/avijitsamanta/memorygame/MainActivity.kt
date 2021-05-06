@@ -192,5 +192,6 @@ class MainActivity : AppCompatActivity(), MemoryBoardAdapter.CardClickListener {
         }
         tvNumMoves.text = "Moves: ${memoryGame.getNumMoves()}"
         adapter.notifyDataSetChanged()
+
     }
 }

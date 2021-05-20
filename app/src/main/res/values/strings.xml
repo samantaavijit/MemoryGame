@@ -7,4 +7,11 @@
     <string name="choose_new_size">Choose New Size</string>
     <string name="save">Save</string>
     <string name="game_name_example_panda_fun">Game name ( example \'panda_fun\')</string>
+
+    <string name="easy">Easy: 4 x 2</string>
+    <string name="e_pair">Pairs: 0 / 4</string>
+    <string name="medium">Medium: 6 x 3</string>
+    <string name="m_pair">Pairs: 0 / 9</string>
+    <string name="hard">Hard: 6 x 4</string>
+    <string name="h_pair">Pairs: 0 / 12</string>
 </resources>
